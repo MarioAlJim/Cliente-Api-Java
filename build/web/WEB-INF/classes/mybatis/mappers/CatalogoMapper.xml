@@ -10,4 +10,28 @@
         catalogo.orden
         FROM catalogo
     </select>
+    
+    <select id ="getCatalogoByIdTipo" resultType = "pojos.Catalogo" parameterType = "int">
+        SELECT 
+        catalogo.idCatalogo,
+        catalogo.idTipo,
+        catalogo.nombre,
+        catalogo.orden
+        FROM catalogo
+        WHERE catalogo.idTipo = #{id}
+    </select>
+    
+    <insert id = "registrarCatalogo" parameterType = "pojos.Catalogo">
+        INSERT INTO catalogo (idCatalogo, idTipo, nombre, orden)
+        VALUES (#{idcatalogo}, #{idtipo}, #{nombre}, #{orden})
+    </insert>
+    
+    <update id = "actualizarCatalogo" parameterType = "pojos.Catalogo">
+        UPDATE catalogo SET nombre = #{nombre}, orden = #{orden}
+        WHERE idCatalogo = #{idcatalogo}
+    </update>
+    
+    <delete id = "eliminarCatalogo" parameterType = "int">
+        DELETE FROM catalogo WHERE idCatalogo = #{idcatalogo}
+    </delete>
 </mapper>

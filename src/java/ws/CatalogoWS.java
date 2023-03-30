@@ -5,8 +5,12 @@ import java.util.List;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.GET;
+import static javax.ws.rs.HttpMethod.POST;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
@@ -14,6 +18,7 @@ import javax.ws.rs.core.MediaType;
 import mybatis.MyBatisUtil;
 import org.apache.ibatis.session.SqlSession;
 import pojos.Catalogo;
+import pojos.Mensaje;
 
 @Path("catalogos")
 public class CatalogoWS {
@@ -57,8 +62,94 @@ public class CatalogoWS {
         }
         return list;
     }
-            
     
+    @Path("byIdtipo/{idtipo}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Catalogo> getCatalogoByIdTipo(@PathParam("idtipo") Integer idtipo) {
+        List<Catalogo> list = null;
+        SqlSession conn = MyBatisUtil.getSession();
+        if(conn != null) {
+            try {
+                list = conn.selectList("Catalogo.getCatalogoByIdTipo", idtipo);
+            } catch(Exception ex) {
+                ex.printStackTrace();
+            } finally {
+                conn.close();
+            }
+        }
+        return list;
+    }
+    
+    @POST
+    @Path("registro")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Mensaje registrarCatalogo (
+            @FormParam("idcatalogo") Integer idcatalogo,
+            @FormParam("idtipo") Integer idtipo,
+            @FormParam("nombre") String nombre,
+            @FormParam("orden") Integer orden) {
+        Mensaje resultado = new Mensaje();
+        Catalogo c = new Catalogo(idcatalogo, nombre, idtipo, orden);
+        SqlSession conn = MyBatisUtil.getSession();
+        if(conn != null) {
+            try {
+                conn.insert("Catalogo.registrarCatalogo", c);
+                conn.commit();
+                resultado = new Mensaje("Catalogo registrado exitosamente", false);
+            } catch(Exception ex) {
+                resultado = new Mensaje(ex.getMessage(), true);
+            } finally {
+                conn.close();
+            }
+        }
+        return resultado;
+    }
+    
+    @PUT
+    @Path("actualizar")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Mensaje actualizarCatalogo (
+            @FormParam("idcatalogo") Integer idcatalogo,
+            @FormParam("nombre") String nombre,
+            @FormParam("orden") Integer orden) {
+        Mensaje resultado = new Mensaje();
+        Catalogo c = new Catalogo(idcatalogo, nombre, orden);
+        SqlSession conn = MyBatisUtil.getSession();
+        if(conn != null) {
+            try {
+                conn.update("Catalogo.actualizarCatalogo", c);
+                conn.commit();
+                resultado = new Mensaje("Catalogo actualizado exitosamente", false);
+            } catch(Exception ex) {
+                resultado = new Mensaje(ex.getMessage(), true);
+            } finally {
+                conn.close();
+            }
+        }
+        return resultado;
+    } 
+    
+    @DELETE
+    @Path("eliminar")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Mensaje eliminarCatalogo (
+            @FormParam("idcatalogo") Integer idcatalogo) {
+        Mensaje resultado = new Mensaje();
+        SqlSession conn = MyBatisUtil.getSession();
+        if(conn != null) {
+            try {
+                conn.delete("Catalogo.eliminarCatalogo", idcatalogo);
+                conn.commit();
+                resultado = new Mensaje("Catalogo eliminado exitosamente", false);
+            } catch(Exception ex) {
+                resultado = new Mensaje(ex.getMessage(), true);
+            } finally {
+                conn.close();
+            }
+        }
+        return resultado;
+    } 
     
     @Context
     private UriInfo context;

@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package pojos;
 
-/**
- *
- * @author SILVERWOLF
- */
 public class Catalogo {
     
     int idcatalogo; 
@@ -23,6 +14,13 @@ public class Catalogo {
         this.nombre = nombre;
         this.idtipo = idtipo;
         this.orden = orden;
+    }
+
+    public Catalogo(int idcatalogo, String nombre, int orden) {
+        this.idcatalogo = idcatalogo;
+        this.nombre = nombre;
+        this.orden = orden;
+        this.idtipo = 0;
     }
     
     public int getIdcatalogo() {
