@@ -24,8 +24,10 @@ public class PrendaWS {
     @Path("getall")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Prenda> getAll(){
+    public List<Prenda> getAll(@Context final HttpServletResponse response){
         List<Prenda> list = null;
+        response.setStatus(200);
+        try { response.flushBuffer(); }catch(Exception e){}
         list = PrendaDAO.getAllPrendas();
         return list;
     }
@@ -34,13 +36,14 @@ public class PrendaWS {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Prenda> getCatalogoByIdTipo(@PathParam("idPrenda") int idprenda, @Context final HttpServletResponse response) {
+        List<Prenda> list = null;
         if (idprenda != 0) {
-            response.setStatus(HttpServletResponse.SC_CREATED);
+            response.setStatus(HttpServletResponse.SC_OK);
+            list = PrendaDAO.getPrendaById(idprenda);
+            try { response.flushBuffer(); }catch(Exception e){}
         }  else{
             response.setStatus(400); 
         }
-        List<Prenda> list = null;
-        list = PrendaDAO.getPrendaById(idprenda);
         try { response.flushBuffer(); }catch(Exception e){}
         return list;
     }
@@ -48,9 +51,15 @@ public class PrendaWS {
     @Path("buscarprendas/{description}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Prenda> getCatalogoByDescription(@PathParam("description") String description) {
+    public List<Prenda> getCatalogoByDescription(@PathParam("description") String description, @Context final HttpServletResponse response) {
         List<Prenda> list = null;
-        list = PrendaDAO.getPrendaByDescription(description);
+        if(description != null) {
+            list = PrendaDAO.getPrendaByDescription(description);
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(400);
+        }
+        try { response.flushBuffer(); }catch(Exception e){}
         return list;
     }
     
@@ -58,19 +67,35 @@ public class PrendaWS {
     @Path("registrarPrenda")
     @Produces(MediaType.APPLICATION_JSON)
     public Mensaje registrarPrenda(
-            @FormParam("idPrenda") int idPrenda,
-            @FormParam("idCategoria") int idCategoria,
-            @FormParam("piezas") int piezas,
+            @FormParam("idPrenda") Integer idPrenda,
+            @FormParam("idCategoria") Integer idCategoria,
+            @FormParam("piezas") Integer piezas,
             @FormParam("serie") String serie,
             @FormParam("porcentajePrestamo") double porcentajePrestamo,
-            @FormParam("idSubcategoria") int idSubCategoria,
+            @FormParam("idSubcategoria") Integer idSubCategoria,
             @FormParam("descripcion") String descripcion,
             @FormParam("prestamo") double prestamo,
             @FormParam("modelo") String modelo,
-            @FormParam("avaluo") double avaluo ) {
+            @FormParam("avaluo") double avaluo,
+            @Context final HttpServletResponse response) {
         Prenda prenda = new Prenda(idPrenda, idCategoria, piezas, serie, porcentajePrestamo, idSubCategoria, descripcion, prestamo, modelo, avaluo);
         Mensaje mensaje = null;
-        mensaje = PrendaDAO.registerPrenda(prenda);
+        if(idPrenda != null && 
+                idCategoria != null &&
+                piezas != null &&
+                serie != null && !serie.isEmpty() &&
+                porcentajePrestamo != 0 &&
+                idSubCategoria != null &&
+                descripcion != null && !descripcion.isEmpty() &&
+                prestamo != 0 &&
+                modelo != null && !modelo.isEmpty() &&
+                avaluo != 0) {
+            mensaje = PrendaDAO.registerPrenda(prenda);
+            response.setStatus(202);
+        } else {
+            response.setStatus(400);
+        }
+        try { response.flushBuffer(); }catch(Exception e){}
         return mensaje;
     }
     
@@ -78,29 +103,53 @@ public class PrendaWS {
     @Path("actualizarprenda")
     @Produces(MediaType.APPLICATION_JSON)
     public Mensaje actualziarPrenda (
-            @FormParam("idPrenda") int idPrenda,
-            @FormParam("idCategoria") int idCategoria,
-            @FormParam("piezas") int piezas,
+            @FormParam("idPrenda") Integer idPrenda,
+            @FormParam("idCategoria") Integer idCategoria,
+            @FormParam("piezas") Integer piezas,
             @FormParam("serie") String serie,
             @FormParam("porcentajePrestamo") double porcentajePrestamo,
-            @FormParam("idSubcategoria") int idSubCategoria,
+            @FormParam("idSubcategoria") Integer idSubCategoria,
             @FormParam("descripcion") String descripcion,
             @FormParam("prestamo") double prestamo,
             @FormParam("modelo") String modelo,
-            @FormParam("avaluo") double avaluo ) {
+            @FormParam("avaluo") double avaluo,
+            @Context final HttpServletResponse response) {
         Prenda prenda = new Prenda(idPrenda, idCategoria, piezas, serie, porcentajePrestamo, idSubCategoria, descripcion, prestamo, modelo, avaluo);
         Mensaje mensaje = null;
-        mensaje = PrendaDAO.updatePrenda(prenda);
+        if(idPrenda != null && 
+                idCategoria != null &&
+                piezas != null &&
+                serie != null && !serie.isEmpty() &&
+                porcentajePrestamo != 0 &&
+                idSubCategoria != null &&
+                descripcion != null && !descripcion.isEmpty() &&
+                prestamo != 0 &&
+                modelo != null && !modelo.isEmpty() &&
+                avaluo != 0) {
+            mensaje = PrendaDAO.updatePrenda(prenda);
+            response.setStatus(202);
+        } else {
+            response.setStatus(400);
+        }
+        
+        try { response.flushBuffer(); }catch(Exception e){}
         return mensaje;
     } 
     
     @DELETE
-    @Path("eliminarprenda/{idPrenda}")
+    @Path("eliminarprenda")
     @Produces(MediaType.APPLICATION_JSON)
     public Mensaje eliminarPrenda (
-            @PathParam("idPrenda") int idprenda) {
+            @FormParam("idPrenda") Integer idprenda, 
+            @Context final HttpServletResponse response) {
         Mensaje resultado = null;
-        resultado = PrendaDAO.deletePrenda(idprenda);
+        if(idprenda != null){
+            resultado = PrendaDAO.deletePrenda(idprenda);
+            response.setStatus(202);
+        } else {
+            response.setStatus(400);
+        }
+        try { response.flushBuffer(); }catch(Exception e){}
         return resultado;
     } 
 
