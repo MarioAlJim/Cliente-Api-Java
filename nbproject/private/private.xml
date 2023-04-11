@@ -3,10 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/ws/CatalogoWS.java</file>
-            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/pojos/Mensaje.java</file>
-            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/mybatis/mappers/CatalogoMapper.xml</file>
-            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/pojos/Catalogo.java</file>
+            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/mybatis/mappers/PrendaMapper.xml</file>
+            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/modelDAO/PrendaDAO.java</file>
+            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/ws/ApplicationConfig.java</file>
+            <file>file:/C:/Users/SILVERWOLF/Documents/NetBeansProjects/WebServicesDAR/src/java/ws/PrendaWS.java</file>
         </group>
     </open-files>
 </project-private>
